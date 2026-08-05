@@ -5,12 +5,21 @@ import heroImg from "./assets/hero.png";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [clipboardText, setClipboardText] = useState("");
+
+  const handleReadClipboard = async () => {
+    const text = await window.electronAPI.getClipboard();
+    setClipboardText(text);
+  };
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>Clipboard Vault</h1>
-      <p>Lesson 1</p>
+
+      <button onClick={handleReadClipboard}>Read Clipboard</button>
+
+      <h2>Current Clipboard:</h2>
+      <p>{clipboardText}</p>
     </div>
   );
 }
