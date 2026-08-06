@@ -6,6 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let mainWindow = null;
 
+let lastClipboardText = "";
+
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -29,6 +31,19 @@ ipcMain.handle("get-clipboard", () => {
   return clipboard.readText();
 });
 
+function monitorClipboard() {
+  setInterval(() => {
+    const currentClipboard = clipboard.readText();
+
+    if (currentClipboard !== lastClipboardText) {
+      mainWindow.webContents.send("clipboard-updated", currentClipboard);
+
+      lastClipboardText = currentClipboard;
+    }
+  }, 500);
+}
+
 app.whenReady().then(() => {
   createWindow();
+  monitorClipboard();
 });
