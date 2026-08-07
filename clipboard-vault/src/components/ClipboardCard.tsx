@@ -1,4 +1,5 @@
 import type { ClipboardItem } from "../types/clipboard";
+import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useState } from "react";
 
 type ClipboardCardProps = {
@@ -17,7 +18,7 @@ function ClipboardCard({ item }: ClipboardCardProps) {
     <div onClick={() => setExpanded(!expanded)}>
       <p>{displayContent}</p>
 
-      <p>{item.timestamp}</p>
+      <p>{formatTimestamp(item.timestamp)}</p>
       <button
         onClick={(event) => {
           event.stopPropagation();
