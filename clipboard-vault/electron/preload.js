@@ -9,4 +9,16 @@ contextBridge.exposeInMainWorld("electronAPI", {
       callback(text);
     });
   },
+
+  getHistory: () => {
+    return ipcRenderer.invoke("get-history");
+  },
+
+  onHistoryUpdated: (callback) => {
+    ipcRenderer.on("history-updated", (_, history) => callback(history));
+  },
+
+  copyClipboardItem: (item) => {
+    return ipcRenderer.invoke("copy-clipboard-item", item);
+  },
 });
