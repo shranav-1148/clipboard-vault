@@ -1,7 +1,10 @@
 import type { ClipboardItem } from "../types/clipboard";
 import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useState } from "react";
-
+import clipboardLogo from "../assets/clipboard-regular-full.svg";
+import starLogo from "../assets/star-regular-full.svg";
+import deleteLogo from "../assets/trash-solid-full.svg";
+import "./ClipboardCard.css";
 type ClipboardCardProps = {
   item: ClipboardItem;
 };
@@ -15,20 +18,30 @@ function ClipboardCard({ item }: ClipboardCardProps) {
       ? item.content.substring(0, maxLength) + "..."
       : item.content;
   return (
-    <div onClick={() => setExpanded(!expanded)}>
-      <p>{displayContent}</p>
+    <div onClick={() => setExpanded(!expanded)} className="card-container">
+      <p className="card-title">{displayContent}</p>
+      <div className="container">
+        <p className="card-timestamp">{formatTimestamp(item.timestamp)}</p>
+        <div className="button-container">
+          <button
+            className="btn-copy"
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log("Copying item:", item);
 
-      <p>{formatTimestamp(item.timestamp)}</p>
-      <button
-        onClick={(event) => {
-          event.stopPropagation();
-          console.log("Copying item:", item);
-
-          window.electronAPI.copyClipboardItem(item);
-        }}
-      >
-        Copy
-      </button>
+              window.electronAPI.copyClipboardItem(item);
+            }}
+          >
+            <img src={clipboardLogo} alt="Copy"></img>
+          </button>
+          <button className="btn-star">
+            <img src={starLogo} alt="Star"></img>
+          </button>
+          <button className="btn-delete">
+            <img src={deleteLogo} alt="Delete"></img>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

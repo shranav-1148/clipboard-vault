@@ -1,0 +1,63 @@
+.card-container {
+    background-color: rgba(70, 70, 70, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    transition: transform 0.3s ease;
+}
+
+.card-container:hover {
+    background-color: rgba(70,70,70, 0.7);
+    transform: scale(1.01);
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: white;
+    text-align:left;
+}
+
+.card-title:hover {
+    cursor:pointer;
+}
+
+.card-timestamp {
+    font-size: 0.9em;
+    color: #8c8a8a;
+    text-align: left;
+    padding-top: 5px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+button {
+    background: none;
+    border:none;
+    font:inherit;
+    cursor:pointer;
+    padding:4px;    
+}
+
+img {
+    width: 25px;
+    height: 25px;
+    display:block;
+    color:white;
+    transition: transform 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.1)
+}
+
+.btn-copy img:focus {
+    color: #696969;
+    transform: scale(1.1)
+}
+
+
