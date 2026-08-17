@@ -4,13 +4,23 @@ import { app, BrowserWindow, ipcMain, clipboard } from "electron";
 import { getHistory, saveHistory } from "./storage/clipboardStorage.js";
 import { addClipboardEntry } from "./services/clipboardService.js";
 
+/**
+ * ===================
+ * Electron Main Page:
+ * @author shranav
+ *
+ * This file holds the main electron window code. This file also interfaces with electron preload
+ * and handles how electron API's function
+ *===================
+ */
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let mainWindow = null;
-let internalCopy = false;
 
 let lastClipboardText = "";
 
+// Creates the main window where the app will initialize
 const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -30,16 +40,30 @@ const createWindow = () => {
   // mainWindow.loadFile("index.html")
 };
 
+/**
+ * ===================================================================================
+ * Handling of APIs that the application makes available for frontend to interact with
+ * ===================================================================================
+ *
+ */
+
+// Handle getting contents of the clipboard
 ipcMain.handle("get-clipboard", () => {
   return clipboard.readText();
 });
 
+// Handles copy of the contents of the item into the clipboard
 ipcMain.handle("copy-clipboard-item", (_, item) => {
   internalCopy = true;
   clipboard.writeText(item.content);
 });
 
 function monitorClipboard() {
+  /**
+   * Function that constantly monitors the content of the clipboard
+   * Adds a new clipboard entry when clipboard contents are changed
+   */
+
   setInterval(() => {
     const currentClipboard = clipboard.readText();
 
@@ -47,11 +71,6 @@ function monitorClipboard() {
       // mainWindow.webContents.send("clipboard-updated", currentClipboard);
 
       lastClipboardText = currentClipboard;
-
-      if (internalCopy) {
-        internalCopy = false;
-        return;
-      }
 
       const history = getHistory();
       const updatedHistory = addClipboardEntry(history, currentClipboard);
@@ -61,10 +80,12 @@ function monitorClipboard() {
   }, 500);
 }
 
+// We need to wait until the app initializes, when its ready we move ahead
 app.whenReady().then(() => {
   createWindow();
   monitorClipboard();
 
+  // Once app is initialized get the history
   ipcMain.handle("get-history", () => {
     return getHistory();
   });

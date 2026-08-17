@@ -6,11 +6,17 @@ import "./App.css";
 import ClipboardCard from "./components/ClipboardCard";
 import type { ClipboardItem } from "./types/clipboard";
 
+/**
+ * The main React App
+ * @returns
+ */
 function App() {
   const [history, setHistory] = useState<ClipboardItem[]>([]);
 
+  // Load all the clipboard history
   useEffect(() => {
     async function loadHistory() {
+      // Wait on getting history before setting a new one
       const savedHistory = await window.electronAPI.getHistory();
 
       setHistory(savedHistory);
@@ -19,6 +25,7 @@ function App() {
     loadHistory();
   }, []);
 
+  // When history is updated set a new history
   useEffect(() => {
     window.electronAPI.onHistoryUpdated((updatedHistory) => {
       setHistory(updatedHistory);

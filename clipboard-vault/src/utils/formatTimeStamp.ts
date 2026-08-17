@@ -1,3 +1,9 @@
+
+/**
+ * Convert timestamp into a string language that is better presentable.
+ * @param timestamp 
+ * @returns 
+ */
 export function formatTimestamp(timestamp: string): string{
     const now = new Date();
     const date = new Date(timestamp);

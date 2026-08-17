@@ -2,6 +2,10 @@ import { app } from "electron";
 import fs from "fs";
 import path from "path";
 
+/**
+ * Gets storage path to userData that holds the data file for the application
+ * @returns
+ */
 function getStoragePath() {
   const userDataPath = app.getPath("userData");
 
@@ -20,12 +24,21 @@ function getStoragePath() {
   return filepath;
 }
 
+/**
+ * Get the history of the clipbaord by reading the entries of the JSON file
+ *
+ * @returns
+ */
 export function getHistory() {
   const filePath = getStoragePath();
   const data = fs.readFileSync(filePath, "utf-8");
   return JSON.parse(data);
 }
 
+/**
+ * Saves history from the application into the storage file
+ * @param {*} history
+ */
 export function saveHistory(history) {
   const filePath = getStoragePath();
   fs.writeFileSync(filePath, JSON.stringify(history, null, 2));

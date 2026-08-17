@@ -1,6 +1,8 @@
 import type { ClipboardItem } from "./clipboard";
 export {}
-
+/**
+ * Declare all the APIs that are made available to be used
+ */
 declare global {
 
     interface Window {

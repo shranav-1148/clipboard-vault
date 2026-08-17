@@ -8,7 +8,13 @@ import "./ClipboardCard.css";
 type ClipboardCardProps = {
   item: ClipboardItem;
 };
-
+/**
+ * The ClipboardCard React component function
+ * Holds all logic inside the Component card including truncation of clipboard content
+ * and expansion logic.
+ * @param param0
+ * @returns
+ */
 function ClipboardCard({ item }: ClipboardCardProps) {
   const [expanded, setExpanded] = useState(false);
   const maxLength = 100;
