@@ -43,7 +43,14 @@ function ClipboardCard({ item }: ClipboardCardProps) {
           <button className="btn-star">
             <img src={starLogo} alt="Star"></img>
           </button>
-          <button className="btn-delete">
+          <button
+            className="btn-delete"
+            onClick={(event) => {
+              event.stopPropagation();
+
+              window.electronAPI.deleteClipboardItem(item.id);
+            }}
+          >
             <img src={deleteLogo} alt="Delete"></img>
           </button>
         </div>

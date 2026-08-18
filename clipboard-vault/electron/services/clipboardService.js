@@ -33,3 +33,7 @@ export function addClipboardEntry(history, content) {
 
   return history;
 }
+
+export function deleteClipboardEntry(history, itemId) {
+  return history.filter((item) => item.id !== itemId);
+}

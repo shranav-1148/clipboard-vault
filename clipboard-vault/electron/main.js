@@ -2,7 +2,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { app, BrowserWindow, ipcMain, clipboard } from "electron";
 import { getHistory, saveHistory } from "./storage/clipboardStorage.js";
-import { addClipboardEntry } from "./services/clipboardService.js";
+import {
+  addClipboardEntry,
+  deleteClipboardEntry,
+} from "./services/clipboardService.js";
 
 /**
  * ===================
@@ -54,8 +57,15 @@ ipcMain.handle("get-clipboard", () => {
 
 // Handles copy of the contents of the item into the clipboard
 ipcMain.handle("copy-clipboard-item", (_, item) => {
-  internalCopy = true;
   clipboard.writeText(item.content);
+});
+
+ipcMain.handle("delete-clipboard-item", (_, itemId) => {
+  const history = getHistory();
+  const updatedHistory = deleteClipboardEntry(history, itemId);
+  saveHistory(updatedHistory);
+
+  mainWindow.webContents.send("history-updated", updatedHistory);
 });
 
 function monitorClipboard() {

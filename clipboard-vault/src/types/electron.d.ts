@@ -22,6 +22,8 @@ declare global {
             copyClipboardItem: (
                 item: ClipboardItem
             ) => Promise<void>;
+
+            deleteClipboardItem: (itemId) => Promise<void>;
         }
     }
 }

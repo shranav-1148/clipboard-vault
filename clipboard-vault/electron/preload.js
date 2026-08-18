@@ -14,7 +14,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return ipcRenderer.invoke("get-clipboard");
   },
   onClipboardUpdated: (callback) => {
-    // Update on the API. The caller will send and receive data to and from the API
+    // Update on the API. The caller will send and receive data to and from the API, whenever the clipboard
+    // changes the renderer will be able to detect it.
     ipcRenderer.on("clipboard-updated", (_, text) => {
       callback(text);
     });
@@ -26,12 +27,16 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
 
   onHistoryUpdated: (callback) => {
-    // on
+    // on: history-updated channel helps the renderer to notice if history has been updated
     ipcRenderer.on("history-updated", (_, history) => callback(history));
   },
 
   copyClipboardItem: (item) => {
     // invoke
     return ipcRenderer.invoke("copy-clipboard-item", item);
+  },
+
+  deleteClipboardItem: (itemId) => {
+    return ipcRenderer.invoke("delete-clipboard-item", itemId);
   },
 });
