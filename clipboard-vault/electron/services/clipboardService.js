@@ -34,6 +34,27 @@ export function addClipboardEntry(history, content) {
   return history;
 }
 
+/**
+ * This function handles deleting clipboard entry from history
+ * @param {} history
+ * @param {*} itemId
+ * @returns
+ */
 export function deleteClipboardEntry(history, itemId) {
   return history.filter((item) => item.id !== itemId);
+}
+
+/**
+ * This function toggles an item to be favorited or not
+ * @param {} history
+ * @param {*} itemId
+ * @returns
+ */
+export function toggleFavorite(history, itemId) {
+  return history.map((item) => {
+    if (item.id === itemId) {
+      return { ...item, favorite: !item.favorite };
+    }
+    return item;
+  });
 }

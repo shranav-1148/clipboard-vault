@@ -5,6 +5,7 @@ import { getHistory, saveHistory } from "./storage/clipboardStorage.js";
 import {
   addClipboardEntry,
   deleteClipboardEntry,
+  toggleFavorite,
 } from "./services/clipboardService.js";
 
 /**
@@ -63,6 +64,14 @@ ipcMain.handle("copy-clipboard-item", (_, item) => {
 ipcMain.handle("delete-clipboard-item", (_, itemId) => {
   const history = getHistory();
   const updatedHistory = deleteClipboardEntry(history, itemId);
+  saveHistory(updatedHistory);
+
+  mainWindow.webContents.send("history-updated", updatedHistory);
+});
+
+ipcMain.handle("toggle-favorite", (_, itemId) => {
+  const history = getHistory();
+  const updatedHistory = toggleFavorite(history, itemId);
   saveHistory(updatedHistory);
 
   mainWindow.webContents.send("history-updated", updatedHistory);

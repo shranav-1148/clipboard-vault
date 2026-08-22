@@ -39,4 +39,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   deleteClipboardItem: (itemId) => {
     return ipcRenderer.invoke("delete-clipboard-item", itemId);
   },
+
+  togglefavorite: (itemId) => {
+    return ipcRenderer.invoke("toggle-favorite", itemId);
+  },
 });
