@@ -24,6 +24,8 @@ declare global {
             ) => Promise<void>;
 
             deleteClipboardItem: (itemId) => Promise<void>;
+
+            toggleFavorite: (itemId) => Promise<void>;
         }
     }
 }

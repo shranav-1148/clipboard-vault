@@ -3,6 +3,7 @@ import { formatTimestamp } from "../utils/formatTimeStamp";
 import { useState } from "react";
 import clipboardLogo from "../assets/clipboard-regular-full.svg";
 import starLogo from "../assets/star-regular-full.svg";
+import starFilledLogo from "../assets/star-solid-full.svg";
 import deleteLogo from "../assets/trash-solid-full.svg";
 import "./ClipboardCard.css";
 type ClipboardCardProps = {
@@ -40,14 +41,23 @@ function ClipboardCard({ item }: ClipboardCardProps) {
           >
             <img src={clipboardLogo} alt="Copy"></img>
           </button>
-          <button className="btn-star">
-            <img src={starLogo} alt="Star"></img>
+          <button
+            className="btn-star"
+            onClick={(event) => {
+              event.stopPropagation();
+              console.log("Toggled entry", item.id);
+              window.electronAPI.toggleFavorite(item.id);
+            }}
+          >
+            <img
+              src={item.favorite ? starFilledLogo : starLogo}
+              alt="Star"
+            ></img>
           </button>
           <button
             className="btn-delete"
             onClick={(event) => {
               event.stopPropagation();
-
               window.electronAPI.deleteClipboardItem(item.id);
             }}
           >

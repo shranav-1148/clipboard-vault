@@ -73,7 +73,6 @@ ipcMain.handle("toggle-favorite", (_, itemId) => {
   const history = getHistory();
   const updatedHistory = toggleFavorite(history, itemId);
   saveHistory(updatedHistory);
-
   mainWindow.webContents.send("history-updated", updatedHistory);
 });
 
