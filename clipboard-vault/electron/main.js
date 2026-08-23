@@ -61,6 +61,7 @@ ipcMain.handle("copy-clipboard-item", (_, item) => {
   clipboard.writeText(item.content);
 });
 
+// Handles deletion of clipboard item: the actual handling is separated into clipboardService
 ipcMain.handle("delete-clipboard-item", (_, itemId) => {
   const history = getHistory();
   const updatedHistory = deleteClipboardEntry(history, itemId);
@@ -69,6 +70,7 @@ ipcMain.handle("delete-clipboard-item", (_, itemId) => {
   mainWindow.webContents.send("history-updated", updatedHistory);
 });
 
+// Handles toggle favorite of item: actual handling in clipboardService
 ipcMain.handle("toggle-favorite", (_, itemId) => {
   const history = getHistory();
   const updatedHistory = toggleFavorite(history, itemId);

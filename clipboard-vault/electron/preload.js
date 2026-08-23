@@ -2,8 +2,11 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 /**
  * ===============
+ * Exposed API
  * This file is the interface between the main electron file and the react frontend
  * React doens't need to know how these APIs work only that they are available to use.
+ *
+ * All functions declared here are made available to React to use from the electron channel
  * ==============
  */
 
