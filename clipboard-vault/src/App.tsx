@@ -55,9 +55,16 @@ function App() {
         />
       </div>
       <div className="history-container">
-        {filteredHistory.map((item) => (
-          <ClipboardCard key={item.id} item={item} />
-        ))}
+        {history.length === 0 ? ( // First check if clipboard history exists
+          <p>No clipboard history yet.</p>
+        ) : filteredHistory.length === 0 ? ( // If it does, check for search results
+          <p>No matching clipboard entries found</p>
+        ) : (
+          filteredHistory.map(
+            //Display all matching results
+            (item) => <ClipboardCard key={item.id} item={item} />,
+          )
+        )}
       </div>
     </div>
   );
