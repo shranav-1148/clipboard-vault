@@ -47,6 +47,7 @@ function App() {
       <div className="header">
         <h1>Clipboard Vault</h1>
         <input
+          className="searchbar"
           type="text"
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}

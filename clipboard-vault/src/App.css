@@ -1,6 +1,7 @@
 .app {
   height: 100vh;
   display:flex;
+  width:100%;
   flex-direction: column;
 }
 
@@ -10,5 +11,14 @@
 
 .history-container{
   flex: 1;
+  width: 100%;
   overflow-y: auto;
+}
+
+.searchbar {
+  background-color: white;
+  border-radius: 5px;
+  height: 3vw;
+  width: 50vw;
+  color: black;
 }
