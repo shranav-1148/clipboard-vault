@@ -12,6 +12,7 @@ import type { ClipboardItem } from "./types/clipboard";
  */
 function App() {
   const [history, setHistory] = useState<ClipboardItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Load all the clipboard history
   useEffect(() => {
@@ -37,12 +38,26 @@ function App() {
   //   setClipboardText(text);
   // };
 
+  const filteredHistory = history.filter((item) =>
+    item.content.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Clipboard Vault</h1>
-      {history.map((item) => (
-        <ClipboardCard key={item.id} item={item} />
-      ))}
+    <div className="app">
+      <div className="header">
+        <h1>Clipboard Vault</h1>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search clipboard history..."
+        />
+      </div>
+      <div className="history-container">
+        {filteredHistory.map((item) => (
+          <ClipboardCard key={item.id} item={item} />
+        ))}
+      </div>
     </div>
   );
 }
