@@ -1,6 +1,12 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { app, BrowserWindow, ipcMain, clipboard } from "electron";
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  clipboard,
+} from "electron";
 import { getHistory, saveHistory } from "./storage/clipboardStorage.js";
 import {
   addClipboardEntry,
@@ -102,6 +108,18 @@ function monitorClipboard() {
 
 // We need to wait until the app initializes, when its ready we move ahead
 app.whenReady().then(() => {
+  // global shortcut of CTRL/CMD+SHIFT+C to focus on clipboard manager when app is running
+  const globalFocus = globalShortcut.register(
+    "CommandOrControl+Shift+C",
+    () => {
+      if (mainWindow?.isMinimized()) {
+        // mainWindow.show(): is for when window is hidden
+        mainWindow.restore(); // specifically for when window is minimized
+      }
+      mainWindow?.focus();
+    },
+  );
+
   createWindow();
   monitorClipboard();
 
@@ -122,4 +140,8 @@ app.whenReady().then(() => {
   // ]);
 
   // console.log(getHistory());
+
+  app.on("will-quit", () => {
+    globalShortcut.unregisterAll();
+  });
 });

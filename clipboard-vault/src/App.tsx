@@ -24,6 +24,7 @@ function App() {
       if (event.key.toLowerCase() === "f" && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         inputRef.current?.focus();
+        inputRef.current?.select();
       }
     };
 
