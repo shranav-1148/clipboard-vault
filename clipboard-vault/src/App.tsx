@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
@@ -13,6 +13,28 @@ import type { ClipboardItem } from "./types/clipboard";
 function App() {
   const [history, setHistory] = useState<ClipboardItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // useRef wires a reference of type HTMLInputElement
+  const inputRef = useRef<HTMLInputElement>(null); // initialized with null
+
+  // Handling of ctrl+F/ cmd + F key
+  useEffect(() => {
+    // internal function to handle keydown
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "f" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    // handle key down
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      // close the event listener once operation is done
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
 
   // Load all the clipboard history
   useEffect(() => {
@@ -52,6 +74,7 @@ function App() {
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
           placeholder="Search clipboard history..."
+          ref={inputRef}
         />
       </div>
       <div className="history-container">
