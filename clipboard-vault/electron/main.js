@@ -6,6 +6,8 @@ import {
   globalShortcut,
   ipcMain,
   clipboard,
+  Tray,
+  Menu,
 } from "electron";
 import { getHistory, saveHistory } from "./storage/clipboardStorage.js";
 import {
@@ -27,8 +29,10 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let mainWindow = null;
-
+let tray = null;
+let isQuitting = false;
 let lastClipboardText = "";
+const iconPath = path.join(__dirname, "assets", "app-logo.png");
 
 // Creates the main window where the app will initialize
 const createWindow = () => {
@@ -48,6 +52,51 @@ const createWindow = () => {
 
   // Production Mode: loading the index.html file
   // mainWindow.loadFile("index.html")
+
+  mainWindow.on("close", (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+};
+
+const showMainWindow = () => {
+  if (mainWindow?.isMinimized()) {
+    // mainWindow.show(): is for when window is hidden
+    mainWindow.restore(); // specifically for when window is minimized
+  }
+
+  if (!mainWindow?.isVisible()) {
+    mainWindow.show();
+  }
+  mainWindow?.focus();
+};
+
+const createTray = () => {
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Show Clipboard Vault",
+      click: () => {
+        // show/focus window
+        showMainWindow();
+      },
+    },
+    {
+      label: "Quit",
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      },
+    },
+  ]);
+
+  tray = new Tray(iconPath);
+  tray.setContextMenu(contextMenu);
+  tray.setToolTip("Clipboard Vault");
+  tray.addListener("click", () => {
+    showMainWindow();
+  });
 };
 
 /**
@@ -112,15 +161,12 @@ app.whenReady().then(() => {
   const globalFocus = globalShortcut.register(
     "CommandOrControl+Shift+C",
     () => {
-      if (mainWindow?.isMinimized()) {
-        // mainWindow.show(): is for when window is hidden
-        mainWindow.restore(); // specifically for when window is minimized
-      }
-      mainWindow?.focus();
+      showMainWindow();
     },
   );
 
   createWindow();
+  createTray();
   monitorClipboard();
 
   // Once app is initialized get the history
