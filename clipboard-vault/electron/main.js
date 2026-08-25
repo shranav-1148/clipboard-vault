@@ -74,8 +74,12 @@ const showMainWindow = () => {
 };
 
 const createTray = () => {
+  /**
+   * Create a tray in the system utility tray (next to wifi and audio icons on taskbar)
+   */
   const contextMenu = Menu.buildFromTemplate([
     {
+      // Uses this template to create components of this tray
       label: "Show Clipboard Vault",
       click: () => {
         // show/focus window
@@ -91,6 +95,7 @@ const createTray = () => {
     },
   ]);
 
+  // Further customization of the tray icon, including click and hover behavior
   tray = new Tray(iconPath);
   tray.setContextMenu(contextMenu);
   tray.setToolTip("Clipboard Vault");
