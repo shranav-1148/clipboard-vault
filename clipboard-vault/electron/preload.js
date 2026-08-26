@@ -29,6 +29,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return ipcRenderer.invoke("get-history");
   },
 
+  getSettings: () => {
+    return ipcRenderer.invoke("get-settings");
+  },
+
   onHistoryUpdated: (callback) => {
     // on: history-updated channel helps the renderer to notice if history has been updated
     ipcRenderer.on("history-updated", (_, history) => callback(history));
@@ -45,5 +49,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   toggleFavorite: (itemId) => {
     return ipcRenderer.invoke("toggle-favorite", itemId);
+  },
+
+  updateSetting: (settingName, value) => {
+    return ipcRenderer.invoke("update-setting", settingName, value);
   },
 });

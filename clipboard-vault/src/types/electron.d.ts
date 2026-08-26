@@ -1,4 +1,5 @@
 import type { ClipboardItem } from "./clipboard";
+import type {Setting } from "./settings";
 export {}
 /**
  * API typings
@@ -9,6 +10,8 @@ declare global {
     interface Window {
         electronAPI: {
             getClipboard: () => Promise<string>;
+
+            getSettings: () => Promise<Setting>
 
             onClipboardUpdated: (
                 callback: (text: string) => void
@@ -27,6 +30,8 @@ declare global {
             deleteClipboardItem: (itemId) => Promise<void>;
 
             toggleFavorite: (itemId) => Promise<void>;
+
+            updateSetting: (settingName: string, value: boolean) => Promise<Settings>;
         }
     }
 }

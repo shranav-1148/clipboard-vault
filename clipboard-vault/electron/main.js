@@ -15,6 +15,8 @@ import {
   deleteClipboardEntry,
   toggleFavorite,
 } from "./services/clipboardService.js";
+import { updateSetting } from "./services/settingsService.js";
+import { getSettings, saveSettings } from "./storage/settingsStorage.js";
 
 /**
  * ===================
@@ -116,6 +118,10 @@ ipcMain.handle("get-clipboard", () => {
   return clipboard.readText();
 });
 
+ipcMain.handle("get-settings", () => {
+  return getSettings();
+});
+
 // Handles copy of the contents of the item into the clipboard
 ipcMain.handle("copy-clipboard-item", (_, item) => {
   clipboard.writeText(item.content);
@@ -136,6 +142,14 @@ ipcMain.handle("toggle-favorite", (_, itemId) => {
   const updatedHistory = toggleFavorite(history, itemId);
   saveHistory(updatedHistory);
   mainWindow.webContents.send("history-updated", updatedHistory);
+});
+
+ipcMain.handle("update-setting", (_, settingName, value) => {
+  const settings = getSettings();
+  const updatedSettings = updateSetting(settings, settingName, value);
+  saveSettings(updatedSettings);
+
+  return updatedSettings;
 });
 
 function monitorClipboard() {
