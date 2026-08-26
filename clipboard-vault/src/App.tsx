@@ -5,7 +5,7 @@ import heroImg from "./assets/hero.png";
 import "./App.css";
 import ClipboardCard from "./components/ClipboardCard";
 import type { ClipboardItem } from "./types/clipboard";
-
+import type { Setting } from "./types/settings";
 /**
  * The main React App
  * @returns
@@ -13,9 +13,20 @@ import type { ClipboardItem } from "./types/clipboard";
 function App() {
   const [history, setHistory] = useState<ClipboardItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [settings, setSettings] = useState<Setting>();
 
   // useRef wires a reference of type HTMLInputElement
   const inputRef = useRef<HTMLInputElement>(null); // initialized with null
+
+  useEffect(() => {
+    async function loadSettings() {
+      const savedSettings = await window.electronAPI.getSettings();
+
+      setSettings(savedSettings);
+    }
+
+    loadSettings();
+  }, []);
 
   // Handling of ctrl+F/ cmd + F key
   useEffect(() => {
@@ -60,6 +71,10 @@ function App() {
   //   const text = await window.electronAPI.getClipboard();
   //   setClipboardText(text);
   // };
+  let settingsLoaded = false;
+  if (settings !== undefined) {
+    settingsLoaded = true;
+  }
 
   const filteredHistory = history.filter((item) =>
     item.content.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -77,6 +92,15 @@ function App() {
           placeholder="Search clipboard history..."
           ref={inputRef}
         />
+
+        {settings !== undefined ? (
+          <div className="settings">
+            <p>Start clipboard when I sign in</p>
+            <p>Start hidden in system tray</p>
+          </div>
+        ) : (
+          <p>Loading settings...</p>
+        )}
       </div>
       <div className="history-container">
         {history.length === 0 ? ( // First check if clipboard history exists
