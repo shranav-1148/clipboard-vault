@@ -95,8 +95,52 @@ function App() {
 
         {settings !== undefined ? (
           <div className="settings">
-            <p>Start clipboard when I sign in</p>
-            <p>Start hidden in system tray</p>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                cursor: "pointer",
+              }}
+            >
+              <span>Start on Startup</span>
+              <input
+                type="checkbox"
+                checked={settings.startOnStartup}
+                onChange={async (e) => {
+                  const updatedSettings =
+                    await window.electronAPI.updateSetting(
+                      "startOnStartup",
+                      e.target.checked,
+                    );
+
+                  setSettings(updatedSettings);
+                }}
+              />
+            </label>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                cursor: "pointer",
+              }}
+            >
+              <span>Start hidden in system tray</span>
+              <input
+                type="checkbox"
+                checked={settings.hiddenOnTray}
+                onChange={async (e) => {
+                  const updatedSettings =
+                    await window.electronAPI.updateSetting(
+                      "hiddenOnTray",
+                      e.target.checked,
+                    );
+
+                  setSettings(updatedSettings);
+                }}
+              />
+            </label>
           </div>
         ) : (
           <p>Loading settings...</p>
