@@ -15,8 +15,10 @@
   background-color: white;
   border-radius: 5px;
   height: 3vw;
-  width: 50vw;
+  width: 99%;
   color: black;
+  
+
 }
 .history-view {
   flex: 1;
@@ -26,10 +28,7 @@
   flex-direction: column;
 }
 
-.searchbar {
-  flex-shrink: 0;
-  
-}
+
 
 .history-container {
   flex: 1;
