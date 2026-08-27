@@ -11,9 +11,11 @@ import type { Setting } from "./types/settings";
  * @returns
  */
 function App() {
+  type View = "history" | "settings";
   const [history, setHistory] = useState<ClipboardItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [settings, setSettings] = useState<Setting>();
+  const [currentView, setCurrentView] = useState<View>("history");
 
   // useRef wires a reference of type HTMLInputElement
   const inputRef = useRef<HTMLInputElement>(null); // initialized with null
@@ -84,80 +86,91 @@ function App() {
     <div className="app">
       <div className="header">
         <h1>Clipboard Vault</h1>
-        <input
-          className="searchbar"
-          type="text"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder="Search clipboard history..."
-          ref={inputRef}
-        />
-
-        {settings !== undefined ? (
-          <div className="settings">
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <span>Start on Startup</span>
-              <input
-                type="checkbox"
-                checked={settings.startOnStartup}
-                onChange={async (e) => {
-                  const updatedSettings =
-                    await window.electronAPI.updateSetting(
-                      "startOnStartup",
-                      e.target.checked,
-                    );
-
-                  setSettings(updatedSettings);
-                }}
-              />
-            </label>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <span>Start hidden in system tray</span>
-              <input
-                type="checkbox"
-                checked={settings.hiddenOnTray}
-                onChange={async (e) => {
-                  const updatedSettings =
-                    await window.electronAPI.updateSetting(
-                      "hiddenOnTray",
-                      e.target.checked,
-                    );
-
-                  setSettings(updatedSettings);
-                }}
-              />
-            </label>
+        <div className="view-buttons">
+          <button onClick={() => setCurrentView("history")}>History</button>
+          <button onClick={() => setCurrentView("settings")}>Settings</button>
+        </div>
+      </div>
+      {currentView === "history" ? (
+        <div className="history-view">
+          <input
+            className="searchbar"
+            type="text"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search clipboard history..."
+            ref={inputRef}
+          />
+          <div className="history-container">
+            {history.length === 0 ? ( // First check if clipboard history exists
+              <p>No clipboard history yet.</p>
+            ) : filteredHistory.length === 0 ? ( // If it does, check for search results
+              <p>No matching clipboard entries found</p>
+            ) : (
+              filteredHistory.map(
+                //Display all matching results
+                (item) => <ClipboardCard key={item.id} item={item} />,
+              )
+            )}
           </div>
-        ) : (
-          <p>Loading settings...</p>
-        )}
-      </div>
-      <div className="history-container">
-        {history.length === 0 ? ( // First check if clipboard history exists
-          <p>No clipboard history yet.</p>
-        ) : filteredHistory.length === 0 ? ( // If it does, check for search results
-          <p>No matching clipboard entries found</p>
-        ) : (
-          filteredHistory.map(
-            //Display all matching results
-            (item) => <ClipboardCard key={item.id} item={item} />,
-          )
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="settingsView">
+          {settings !== undefined ? (
+            <div className="settings">
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <span>Start on Startup</span>
+                <input
+                  type="checkbox"
+                  checked={settings.startOnStartup}
+                  onChange={async (e) => {
+                    const updatedSettings =
+                      await window.electronAPI.updateSetting(
+                        "startOnStartup",
+                        e.target.checked,
+                      );
+
+                    setSettings(updatedSettings);
+                  }}
+                />
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <span>Start hidden in system tray</span>
+                <input
+                  type="checkbox"
+                  checked={settings.hiddenOnTray}
+                  onChange={async (e) => {
+                    const updatedSettings =
+                      await window.electronAPI.updateSetting(
+                        "hiddenOnTray",
+                        e.target.checked,
+                      );
+
+                    setSettings(updatedSettings);
+                  }}
+                  disabled={settings.startOnStartup ? false : true}
+                />
+              </label>
+            </div>
+          ) : (
+            <p>Loading settings...</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
