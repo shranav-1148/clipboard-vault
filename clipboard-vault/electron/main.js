@@ -17,6 +17,7 @@ import {
 } from "./services/clipboardService.js";
 import { updateSetting } from "./services/settingsService.js";
 import { getSettings, saveSettings } from "./storage/settingsStorage.js";
+import { start } from "repl";
 
 /**
  * ===================
@@ -30,6 +31,7 @@ import { getSettings, saveSettings } from "./storage/settingsStorage.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const startHidden = process.argv.includes("--hidden");
 let mainWindow = null;
 let tray = null;
 let isQuitting = false;
@@ -44,6 +46,7 @@ const createWindow = () => {
     title: "Clipboard Vault",
     minWidth: 800,
     minHeight: 600,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -51,6 +54,12 @@ const createWindow = () => {
 
   // Development Mode: Loading the vite server url
   mainWindow.loadURL("http://localhost:5173");
+
+  mainWindow.once("ready-to-show", () => {
+    if (!startHidden) {
+      mainWindow.show();
+    }
+  });
 
   // Production Mode: loading the index.html file
   // mainWindow.loadFile("index.html")
@@ -74,6 +83,17 @@ const showMainWindow = () => {
   }
   mainWindow?.focus();
 };
+
+function applyStartupSetting(settings) {
+  if (!app.isPackaged) {
+    return;
+  }
+
+  app.setLoginItemSettings({
+    openAtLogin: settings.startOnStartup,
+    args: settings.hiddenOnTray ? ["--hidden"] : [],
+  });
+}
 
 const createTray = () => {
   /**
@@ -148,6 +168,7 @@ ipcMain.handle("update-setting", (_, settingName, value) => {
   const settings = getSettings();
   const updatedSettings = updateSetting(settings, settingName, value);
   saveSettings(updatedSettings);
+  applyStartupSetting(updatedSettings);
 
   return updatedSettings;
 });
