@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
 import "./App.css";
 import ClipboardCard from "./components/ClipboardCard";
 import type { ClipboardItem } from "./types/clipboard";
@@ -73,10 +70,6 @@ function App() {
   //   const text = await window.electronAPI.getClipboard();
   //   setClipboardText(text);
   // };
-  let settingsLoaded = false;
-  if (settings !== undefined) {
-    settingsLoaded = true;
-  }
 
   const filteredHistory = history.filter((item) =>
     item.content.toLowerCase().includes(searchQuery.toLowerCase()),

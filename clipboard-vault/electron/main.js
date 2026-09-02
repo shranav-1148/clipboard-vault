@@ -17,7 +17,6 @@ import {
 } from "./services/clipboardService.js";
 import { updateSetting } from "./services/settingsService.js";
 import { getSettings, saveSettings } from "./storage/settingsStorage.js";
-import { start } from "repl";
 
 /**
  * ===================
@@ -52,17 +51,20 @@ const createWindow = () => {
     },
   });
 
-  // Development Mode: Loading the vite server url
-  mainWindow.loadURL("http://localhost:5173");
+  const testProductionBuild = process.argv.includes("--test-build");
+  if (app.isPackaged || testProductionBuild) {
+    // Production Mode: loading the index.html file
+    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+  } else {
+    // Development Mode: Loading the vite server url
+    mainWindow.loadURL("http://localhost:5173");
+  }
 
   mainWindow.once("ready-to-show", () => {
     if (!startHidden) {
       mainWindow.show();
     }
   });
-
-  // Production Mode: loading the index.html file
-  // mainWindow.loadFile("index.html")
 
   mainWindow.on("close", (event) => {
     if (!isQuitting) {
