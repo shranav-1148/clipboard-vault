@@ -197,39 +197,49 @@ function monitorClipboard() {
   }, 500);
 }
 
-// We need to wait until the app initializes, when its ready we move ahead
-app.whenReady().then(() => {
-  // global shortcut of CTRL/CMD+SHIFT+C to focus on clipboard manager when app is running
-  const globalFocus = globalShortcut.register(
-    "CommandOrControl+Shift+C",
-    () => {
-      showMainWindow();
-    },
-  );
+const gotTheLock = app.requestSingleInstanceLock();
 
-  createWindow();
-  createTray();
-  monitorClipboard();
-
-  // Once app is initialized get the history
-  ipcMain.handle("get-history", () => {
-    return getHistory();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    showMainWindow();
   });
 
-  // console.log(getHistory());
+  // We need to wait until the app initializes, when its ready we move ahead
+  app.whenReady().then(() => {
+    // global shortcut of CTRL/CMD+SHIFT+C to focus on clipboard manager when app is running
+    const globalFocus = globalShortcut.register(
+      "CommandOrControl+Shift+C",
+      () => {
+        showMainWindow();
+      },
+    );
 
-  // saveHistory([
-  //   {
-  //     id: "123",
-  //     content: "Testing Storage",
-  //     timestamp: new Date().toISOString(),
-  //     favorite: false,
-  //   },
-  // ]);
+    createWindow();
+    createTray();
+    monitorClipboard();
 
-  // console.log(getHistory());
+    // Once app is initialized get the history
+    ipcMain.handle("get-history", () => {
+      return getHistory();
+    });
 
-  app.on("will-quit", () => {
-    globalShortcut.unregisterAll();
+    // console.log(getHistory());
+
+    // saveHistory([
+    //   {
+    //     id: "123",
+    //     content: "Testing Storage",
+    //     timestamp: new Date().toISOString(),
+    //     favorite: false,
+    //   },
+    // ]);
+
+    // console.log(getHistory());
+
+    app.on("will-quit", () => {
+      globalShortcut.unregisterAll();
+    });
   });
-});
+}
